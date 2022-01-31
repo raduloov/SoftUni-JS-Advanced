@@ -45,7 +45,7 @@ class Company {
       .sort((a, b) => b.salary - a.salary || a.name.localeCompare(b.name))
       .map(emp => `${emp.name} ${emp.salary} ${emp.position}`);
 
-    return `Best department is: ${bestDep}\nAverage salary: ${bestAvgSalary.toFixed(
+    return `Best Department is: ${bestDep}\nAverage salary: ${bestAvgSalary.toFixed(
       2
     )}\n${bestEmployees.join('\n')}`.trim();
   }
@@ -64,9 +64,3 @@ c.addEmployee('Stanimir', 1200, 'digital marketing manager', 'Marketing');
 c.addEmployee('Pesho', 1000, 'graphical designer', 'Marketing');
 c.addEmployee('Gosho', 1350, 'HR', 'Human resources');
 console.log(c.bestDepartment());
-
-('Best department is: Human resources\nAverage salary: 1675.00\nStanimir 2000 engineer\nGosho 1350 HR');
-('Best Department is: Human resources\nAverage salary: 1675.00\nStanimir 2000 engineer\nGosho 1350 HR');
-
-('Best department is: Construction\nAverage salary: 1500.00\nStan 2000 architect\nStanimir 2000 engineer\nPesho 1500 electrical engineer\nSlavi 500 dyer');
-('Best Department is: Construction\nAverage salary: 1500.00\nStan 2000 architect\nStanimir 2000 engineer\nPesho 1500 electrical engineer\nSlavi 500 dyer');
