@@ -10,12 +10,11 @@ function solve() {
   onScreenBtn.addEventListener('click', event => {
     event.preventDefault();
 
-    priceInput.value = Number(priceInput.value);
-
     if (
       nameInput.value !== '' &&
       hallInput.value !== '' &&
-      !isNaN(priceInput.value)
+      priceInput.value !== '' &&
+      !isNaN(Number(priceInput.value))
     ) {
       const markup = `<li><span>${nameInput.value}</span><strong>Hall: ${
         hallInput.value
