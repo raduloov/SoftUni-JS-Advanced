@@ -2,7 +2,7 @@ class Story {
   constructor(title, creator) {
     this.title = title;
     this.creator = creator;
-    this.comments = [];
+    this._comments = [];
     this._likes = [];
   }
 
@@ -19,7 +19,7 @@ class Story {
   }
 
   like(username) {
-    if (this._likes[username]) {
+    if (this._likes.includes(username)) {
       throw new Error("You can't like the same story twice!");
     }
 
@@ -41,11 +41,11 @@ class Story {
   }
 
   comment(username, content, id) {
-    const comment = this.comments.find(comment => comment.id === id);
+    const comment = this._comments.find(comment => comment.id === id);
 
     if (!id || !comment) {
-      this.comments.push({
-        id: this.comments.length + 1,
+      this._comments.push({
+        id: this._comments.length + 1,
         username,
         content,
         replies: [],
@@ -67,7 +67,7 @@ class Story {
     let output = `Title: ${this.title}\nCreator: ${this.creator}\nLikes: ${this._likes.length}\nComments:`;
 
     if (sortingType === 'asc') {
-      this.comments
+      this._comments
         .sort((a, b) => a.id - b.id)
         .forEach(comment => {
           output += `\n-- ${comment.id}. ${comment.username}: ${comment.content}`;
@@ -82,7 +82,7 @@ class Story {
     }
 
     if (sortingType === 'desc') {
-      this.comments
+      this._comments
         .sort((a, b) => b.id - a.id)
         .forEach(comment => {
           output += `\n-- ${comment.id}. ${comment.username}: ${comment.content}`;
@@ -97,7 +97,7 @@ class Story {
     }
 
     if (sortingType === 'username') {
-      this.comments
+      this._comments
         .sort((a, b) => a.username.localeCompare(b.username))
         .forEach(comment => {
           output += `\n-- ${comment.id}. ${comment.username}: ${comment.content}`;
@@ -122,9 +122,9 @@ console.log(art.likes);
 art.like('Ivan');
 art.like('Steven');
 console.log(art.likes);
-// art.comment('Anny', 'Some Content');
-// art.comment('Ammy', 'New Content', 1);
-// art.comment('Zane', 'Reply', 2);
-// art.comment('Jessy', 'Nice :)');
-// art.comment('SAmmy', 'Reply@', 2);
+art.comment('Anny', 'Some Content');
+art.comment('Ammy', 'New Content', 1);
+art.comment('Zane', 'Reply', 2);
+art.comment('Jessy', 'Nice :)');
+art.comment('SAmmy', 'Reply@', 2);
 console.log(art.toString('asc'));
