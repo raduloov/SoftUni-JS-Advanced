@@ -1,10 +1,17 @@
-let { Repository } = require("./solution.js");
+const expect = require('chai').expect;
+const { Repository } = require('./solution.js');
 
-describe("Tests …", function () {
-    describe("TODO …", function () {
-        it("TODO …", function () {
-            // TODO: …
-        });
+describe('Repository', () => {
+  describe('Instantiation', () => {
+    it('Should return correct output for correct input', () => {
+      const props = {
+        name: 'string',
+        age: 'number',
+        birthday: 'object',
+      };
+
+      expect(new Repository(props)).to.equal();
     });
-    // TODO: …
+  });
+  // TODO: …
 });
