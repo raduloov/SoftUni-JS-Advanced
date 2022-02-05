@@ -89,3 +89,5 @@ try {
 } catch (err) {
   console.log('Error: ' + err.message);
 }
+
+module.exports = PaymentPackage;
