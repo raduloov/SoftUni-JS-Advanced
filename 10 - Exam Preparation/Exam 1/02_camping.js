@@ -20,7 +20,7 @@ class SummerCamp {
     }
 
     if (money < this.priceForCamp[condition]) {
-      return `The money is not enough to pay the stay at the camp.`;
+      return 'The money is not enough to pay the stay at the camp.';
     }
 
     this.listOfParticipants.push({
