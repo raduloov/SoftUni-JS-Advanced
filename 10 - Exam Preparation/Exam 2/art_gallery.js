@@ -10,53 +10,51 @@ class ArtGallery {
     this.guests = [];
   }
 
-  addArticle(model, name, quantity) {
-    if (
-      !Object.keys(this.possibleArticles).find(
-        key => key.toLowerCase() === model.toLowerCase()
-      )
-    ) {
+  addArticle(articleModel, articleName, quantity) {
+    if (!this.possibleArticles[articleModel.toLowerCase()]) {
       throw new Error('This article model is not included in this gallery!');
     }
 
-    const article = this.listOfArticles.find(art => art.name === name);
+    const article = this.listOfArticles.find(
+      article => article.articleName === articleName
+    );
 
-    if (article) {
+    if (article && article.articleModel === articleModel) {
       article.quantity += quantity;
-    } else {
-      this.listOfArticles.push({
-        model: model.toLowerCase(),
-        name,
-        quantity,
-      });
+      return `Successfully added article ${articleName} with a new quantity- ${quantity}.`;
     }
 
-    return `Successfully added article ${name} with a new quantity- ${quantity}.`;
+    this.listOfArticles.push({
+      articleModel: articleModel.toLowerCase(),
+      articleName,
+      quantity,
+    });
+    return `Successfully added article ${articleName} with a new quantity- ${quantity}.`;
   }
 
-  inviteGuest(name, personality) {
-    const guest = this.guests.find(guest => guest.name === name);
+  inviteGuest(guestName, personality) {
+    const guest = this.guests.find(guest => guest.guestName === guestName);
 
     if (guest) {
-      throw new Error(`${name} has already been invited.`);
+      throw new Error(`${guestName} has already been invited.`);
     }
 
-    const points = personality === 'Vip' ? 500 : personality === 'Middle' ? 250 : 50;
-
     this.guests.push({
-      name,
-      points,
+      guestName,
+      points: personality === 'Vip' ? 500 : personality === 'Middle' ? 250 : 50,
       purchaseArticle: 0,
     });
-
-    return `You have successfully invited ${name}!`;
+    return `You have successfully invited ${guestName}!`;
   }
 
-  buyArticle(model, articleName, guestName) {
-    const article = this.listOfArticles.find(art => art.name === articleName);
-    const guest = this.guests.find(guest => guest.name === guestName);
+  buyArticle(articleModel, articleName, guestName) {
+    const article = this.listOfArticles.find(
+      article => article.articleName === articleName
+    );
+    const guest = this.guests.find(guest => guest.guestName === guestName);
+    const articlePoints = this.possibleArticles[articleModel.toLowerCase()];
 
-    if (!article || article.model !== model) {
+    if (!article || article.articleModel !== articleModel) {
       throw new Error('This article is not found.');
     }
 
@@ -68,38 +66,36 @@ class ArtGallery {
       return 'This guest is not invited.';
     }
 
-    if (!guest.points >= this.possibleArticles[model]) {
+    if (guest.points < articlePoints) {
       return 'You need to more points to purchase the article.';
     }
 
-    guest.points -= this.possibleArticles[model];
+    guest.points -= articlePoints;
     guest.purchaseArticle++;
     article.quantity--;
-
-    return `${guestName} successfully purchased the article worth ${this.possibleArticles[model]} points.`;
+    return `${guestName} successfully purchased the article worth ${articlePoints} points.`;
   }
 
   showGalleryInfo(criteria) {
     if (criteria === 'article') {
-      const articles = this.listOfArticles.map(
-        art => `${art.model} - ${art.name} - ${art.quantity}`
-      );
-
-      return `Articles information:\n${articles.join('\n')}`;
+      return `Articles information:\n${this.listOfArticles
+        .map(
+          article =>
+            `${article.articleModel} - ${article.articleName} - ${article.quantity}`
+        )
+        .join('\n')}`;
     }
 
     if (criteria === 'guest') {
-      const guests = this.guests.map(
-        guest => `${guest.name} - ${guest.purchaseArticle}`
-      );
-
-      return `Guests information:\n${guests.join('\n')}`;
+      return `Guests information:\n${this.guests
+        .map(guest => `${guest.guestName} - ${guest.purchaseArticle}`)
+        .join('\n')}`;
     }
   }
 }
 
 const artGallery = new ArtGallery('Curtis Mayfield');
-artGallery.addArticle('pictur', 'Mona Liza', 3);
+artGallery.addArticle('picture', 'Mona Liza', 3);
 artGallery.addArticle('Item', 'Ancient vase', 2);
 artGallery.addArticle('picture', 'Mona Liza', 1);
 artGallery.inviteGuest('John', 'Vip');
