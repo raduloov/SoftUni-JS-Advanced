@@ -6,40 +6,52 @@ class Restaurant {
     this.history = [];
   }
 
-  loadProducts(array) {
-    array.forEach(string => {
-      const [productName, productQuantity, totalPrice] = string.split(' ');
+  loadProducts(products) {
+    const actions = [];
 
-      if (this.budgetMoney < Number(totalPrice)) {
-        this.history.push(
-          `There was not enough money to load ${productQuantity} ${productName}`
-        );
-        return;
+    products.forEach(line => {
+      const [product, quantity, price] = line.split(' ');
+
+      if (Number(price) <= this.budgetMoney) {
+        if (!this.stockProducts[product]) {
+          this.stockProducts[product] = Number(quantity);
+        } else {
+          this.stockProducts[product] += Number(quantity);
+        }
+
+        this.budgetMoney -= Number(price);
+
+        const action = `Successfully loaded ${quantity} ${product}`;
+
+        this.history.push(action);
+        actions.push(action);
+      } else {
+        const action = `There was not enough money to load ${quantity} ${product}`;
+
+        this.history.push(action);
+        actions.push(action);
       }
-
-      this.stockProducts[productName] = productQuantity;
-
-      this.budgetMoney -= totalPrice;
-      this.history.push(`Successfully loaded ${productQuantity} ${productName}`);
     });
 
-    return this.history.join('\n');
+    return actions.join('\n');
   }
 
   addToMenu(meal, neededProducts, price) {
-    const products = neededProducts.map(string => {
-      return { product: string.split(' ')[0], price: Number(string.split(' ')[1]) };
-    });
-
     if (!this.menu[meal]) {
-      this.menu[meal] = { neededProducts: products, price };
-    }
+      this.menu[meal] = {
+        products: neededProducts.reduce((acc, curr) => {
+          const [product, quantity] = curr.split(' ');
 
-    if (Object.keys(this.menu).length === 1) {
-      return `Great idea! Now with the ${meal} we have 1 meal in the menu, other ideas?`;
-    }
+          acc[product] = Number(quantity);
+          return acc;
+        }, {}),
+        price,
+      };
 
-    if (Object.keys(this.menu).length === 0 || Object.keys(this.menu).length > 1) {
+      if (Object.keys(this.menu).length === 1) {
+        return `Great idea! Now with the ${meal} we have 1 meal in the menu, other ideas?`;
+      }
+
       return `Great idea! Now with the ${meal} we have ${
         Object.keys(this.menu).length
       } meals in the menu, other ideas?`;
@@ -53,24 +65,26 @@ class Restaurant {
       return 'Our menu is not ready yet, please come later...';
     }
 
-    return Object.entries(this.menu)
-      .map(el => `${el[0]} - $ ${el[1].price}`)
-      .join('\n');
+    return `${Object.keys(this.menu)
+      .map(meal => `${meal} - $ ${this.menu[meal].price}`)
+      .join('\n')}`;
   }
 
   makeTheOrder(meal) {
-    const curMeal = Object.keys(this.menu).find(m => m === meal);
-
-    if (!curMeal) {
+    if (!this.menu[meal]) {
       return `There is not ${meal} yet in our menu, do you want to order something else?`;
     }
 
-    this.menu[meal].neededProducts.forEach(product => {
-      if (!this.stockProducts[product]) {
-        return `For the time being, we cannot complete your order (${meal}), we are very sorry...`;
-      }
+    if (
+      !Object.entries(this.menu[meal].products).every(
+        ([product, quantity]) => this.stockProducts[product] >= quantity
+      )
+    ) {
+      return `For the time being, we cannot complete your order (${meal}), we are very sorry...`;
+    }
 
-      this.stockProducts[product]--;
+    Object.entries(this.menu[meal].products).forEach(([product, quantity]) => {
+      this.stockProducts[product] -= quantity;
     });
 
     this.budgetMoney += this.menu[meal].price;
@@ -78,7 +92,7 @@ class Restaurant {
   }
 }
 
-let kitchen = new Restaurant(1000);
+const kitchen = new Restaurant(1000);
 kitchen.loadProducts([
   'Yogurt 30 3',
   'Honey 50 4',
@@ -87,7 +101,7 @@ kitchen.loadProducts([
 ]);
 kitchen.addToMenu(
   'frozenYogurt',
-  ['Yogurt 1', 'Honey 1', 'Banana 1', 'Strawberries 10'],
+  ['Yogurt 1', 'Honey 1', 'Banana 1', 'Strawberries 20'],
   9.99
 );
 console.log(kitchen.makeTheOrder('frozenYogurt'));
