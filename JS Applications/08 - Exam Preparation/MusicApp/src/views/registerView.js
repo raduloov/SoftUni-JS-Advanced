@@ -1,6 +1,6 @@
 import { html } from '../../node_modules/lit-html/lit-html.js';
 
-import * as authService from '../services/authService.js';
+import * as userService from '../services/userService.js';
 
 const registerTemplate = submitHandler => html`
   <section id="registerPage">
@@ -55,12 +55,17 @@ export const registerView = ctx => {
       ['conf-pass']: confPass
     } = Object.fromEntries(new FormData(e.currentTarget));
 
+    if (email === '' || password === '') {
+      alert('Invalid fields.');
+      return;
+    }
+
     if (confPass !== password) {
       alert("Passwords don't match.");
       return;
     }
 
-    authService
+    userService
       .register(email, password)
       .then(() => {
         ctx.page.redirect('/');

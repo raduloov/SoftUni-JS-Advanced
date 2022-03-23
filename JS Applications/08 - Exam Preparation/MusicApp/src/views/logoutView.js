@@ -1,7 +1,7 @@
-import * as authService from '../services/authService.js';
+import * as userService from '../services/userService.js';
 
-export const logoutView = ctx => {
-  authService.logout().then(() => {
+export const logoutView = async ctx => {
+  userService.logout().then(() => {
     ctx.page.redirect('/');
   });
 };

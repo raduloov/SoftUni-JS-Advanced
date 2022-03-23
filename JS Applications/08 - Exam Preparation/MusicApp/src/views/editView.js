@@ -1,13 +1,13 @@
-import { html } from '../../node_modules/lit-html/lit-html.js';
+import { html, nothing } from '../../node_modules/lit-html/lit-html.js';
 
 import * as albumService from '../services/albumService.js';
 import { validateAlbum } from '../utils/validators.js';
 
-const createTemplate = submitHandler => html`
-  <section class="createPage">
+const editTemplate = (album, submitHandler) => html`
+  <section class="editPage">
     <form @submit=${submitHandler} method="POST">
       <fieldset>
-        <legend>Add Album</legend>
+        <legend>Edit Album</legend>
 
         <div class="container">
           <label for="name" class="vhide">Album name</label>
@@ -16,7 +16,7 @@ const createTemplate = submitHandler => html`
             name="name"
             class="name"
             type="text"
-            placeholder="Album name"
+            value="${album.name}"
           />
 
           <label for="imgUrl" class="vhide">Image Url</label>
@@ -25,7 +25,7 @@ const createTemplate = submitHandler => html`
             name="imgUrl"
             class="imgUrl"
             type="text"
-            placeholder="Image Url"
+            value="${album.imgUrl}"
           />
 
           <label for="price" class="vhide">Price</label>
@@ -34,7 +34,7 @@ const createTemplate = submitHandler => html`
             name="price"
             class="price"
             type="text"
-            placeholder="Price"
+            value="${album.price}"
           />
 
           <label for="releaseDate" class="vhide">Release date</label>
@@ -43,7 +43,7 @@ const createTemplate = submitHandler => html`
             name="releaseDate"
             class="releaseDate"
             type="text"
-            placeholder="Release date"
+            value="${album.releaseDate}"
           />
 
           <label for="artist" class="vhide">Artist</label>
@@ -52,7 +52,7 @@ const createTemplate = submitHandler => html`
             name="artist"
             class="artist"
             type="text"
-            placeholder="Artist"
+            value="${album.artist}"
           />
 
           <label for="genre" class="vhide">Genre</label>
@@ -61,24 +61,24 @@ const createTemplate = submitHandler => html`
             name="genre"
             class="genre"
             type="text"
-            placeholder="Genre"
+            value="${album.genre}"
           />
 
           <label for="description" class="vhide">Description</label>
-          <textarea
-            name="description"
-            class="description"
-            placeholder="Description"
-          ></textarea>
+          <textarea name="description" class="description" rows="10" cols="10">
+${album.description}</textarea
+          >
 
-          <button class="add-album" type="submit">Add New Album</button>
+          <button class="edit-album" type="submit">Edit Album</button>
         </div>
       </fieldset>
     </form>
   </section>
 `;
 
-export const createView = ctx => {
+export const editView = ctx => {
+  const albumId = ctx.params.albumId;
+
   const submitHandler = e => {
     e.preventDefault();
 
@@ -89,13 +89,12 @@ export const createView = ctx => {
       return;
     }
 
-    albumService
-      .create(albumData)
-      .then(() => {
-        ctx.page.redirect('/catalog');
-      })
-      .catch(error => alert(error));
+    albumService.edit(albumId, albumData).then(() => {
+      ctx.page.redirect(`/albums/${albumId}`);
+    });
   };
 
-  ctx.render(createTemplate(submitHandler));
+  albumService.getAlbum(albumId).then(album => {
+    ctx.render(editTemplate(album, submitHandler));
+  });
 };

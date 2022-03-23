@@ -12,7 +12,7 @@ const userLinks = html`
 
 const navigationTemplate = user => html`
   <nav>
-    <img src="./images/headphones.png" />
+    <img src="/images/headphones.png" />
     <a href="/">Home</a>
     <ul>
       <li><a href="/catalog">Catalog</a></li>
