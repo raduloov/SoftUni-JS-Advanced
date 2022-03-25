@@ -54,12 +54,28 @@ export const registerView = ctx => {
     );
 
     if (username === '' || email === '' || password === '') {
-      alert('Invalid fields.');
+      const notification = document.querySelector('.notification');
+      const notifMsg = notification.querySelector('span');
+
+      notifMsg.innerText = 'Invalid fields!';
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
       return;
     }
 
     if (repeatPass !== password) {
-      alert("Passwords don't match.");
+      const notification = document.querySelector('.notification');
+      const notifMsg = notification.querySelector('span');
+
+      notifMsg.innerText = 'Invalid fields!';
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
       return;
     }
 

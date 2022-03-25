@@ -47,7 +47,15 @@ export const editView = ctx => {
     const memeData = Object.fromEntries(new FormData(e.currentTarget));
 
     if (memeIsNotValid(memeData)) {
-      alert('All fields are required!');
+      const notification = document.querySelector('.notification');
+      const notifMsg = notification.querySelector('span');
+
+      notifMsg.innerText = 'Invalid fields!';
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
       return;
     }
 

@@ -32,6 +32,15 @@ export const loginView = ctx => {
     const { email, password } = Object.fromEntries(new FormData(e.currentTarget));
 
     if (email.trim().length === 0 || password.trim().length === 0) {
+      const notification = document.querySelector('.notification');
+      const notifMsg = notification.querySelector('span');
+
+      notifMsg.innerText = 'Invalid fields!';
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 3000);
       return;
     }
 
@@ -41,15 +50,7 @@ export const loginView = ctx => {
         ctx.page.redirect('/memes');
       })
       .catch(error => {
-        const notification = document.querySelector('.notification');
-        const notifMsg = notification.querySelector('span');
-
-        notifMsg.innerText = error;
-        notification.style.display = 'block';
-
-        setTimeout(() => {
-          notification.style.display = 'none';
-        }, 3000);
+        alert(error);
       });
   };
 
